@@ -1,0 +1,43 @@
+package dancing.school.entities;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "teachers")
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class TeacherEntity {
+
+    @Id
+    @GeneratedValue
+    @Column(name = "teacher_id")
+    private Long id;
+
+    @Column(name = "first_name",  nullable = false, length = 50)
+    private String firstName;
+
+    @Column(name =  "last_name", nullable = false, length = 50)
+    private String lastName;
+
+    @Column (length = 50)
+    private String patronymic;
+
+    @Column(nullable = false)
+    private float experience;
+
+    @Column(name = "about_me", nullable = false, length = 150)
+    private String aboutMe;
+
+    @Column(nullable = false)
+    private int age;
+
+    @Column(unique = true, length = 50, nullable = false)
+    private String username;
+
+    @Column(length = 50, nullable = false)
+    private String password;
+}

@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: dance_school
+  datasource:
+    url: jdbc:postgresql://localhost/dance_school
+    username: admin
+    password: mypass
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update

@@ -1,0 +1,58 @@
+package dancing.school.controllers;
+
+import dancing.school.dto.*;
+import dancing.school.services.ITeacherService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/v1/teachers")
+@AllArgsConstructor
+public class TeacherController {
+
+    private ITeacherService teacherService;
+
+    @PostMapping
+    public ResponseEntity<ResponseDTO<GetTeacherDTO>> createTeacher(@RequestBody CreateTeacherDTO dto) {
+        GetTeacherDTO teacher = teacherService.createTeacher(dto);
+        var responseDTO = new ResponseDTO<GetTeacherDTO>();
+        responseDTO.setData(teacher);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+    }
+
+    @GetMapping
+    public ResponseEntity<ResponseDTO<List<GetShortTeacherDTO>>> getTeachers() {
+        List<GetShortTeacherDTO> teachers = teacherService.getTeachers();
+        var responseDTO = new ResponseDTO<List<GetShortTeacherDTO>>();
+        responseDTO.setData(teachers);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDTO<GetTeacherDTO>> getTeacher(@PathVariable("id") Long id) {
+        GetTeacherDTO teacher = teacherService.getTeacherById(id);
+       var responseDTO =  new ResponseDTO<GetTeacherDTO>();
+       responseDTO.setData(teacher);
+       return ResponseEntity.ok(responseDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDTO<Void>> deleteTeacher(@PathVariable("id") Long id) {
+        this.teacherService.deleteTeacherById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseDTO<GetTeacherDTO>> updateTeacher(@RequestBody UpdateTeacherDTO dto, @PathVariable("id") Long id) {
+        GetTeacherDTO teacher = this.teacherService.updateTeacher(id, dto);
+        ResponseDTO<GetTeacherDTO> response  = ResponseDTO
+                .<GetTeacherDTO>builder()
+                .data(teacher)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+}
