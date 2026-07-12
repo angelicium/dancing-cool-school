@@ -24,6 +24,11 @@ public class TeacherService implements ITeacherService {
 
     private TeacherMapper teacherMapper;
 
+    private TeacherEntity getTeacher(Long id) {
+        return teacherRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Учитель не найден с айди " + id));
+    }
+
     @Override
     public GetTeacherDTO createTeacher(CreateTeacherDTO dto) {
        TeacherEntity teacherEntity = teacherMapper.toEntity(dto);
@@ -40,27 +45,21 @@ public class TeacherService implements ITeacherService {
 
     @Override
     public GetTeacherDTO getTeacherById(Long id) {
-        Optional<TeacherEntity> optTeacher = teacherRepository.findById(id);
-        TeacherEntity teacherEntity = optTeacher.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Такой учитель не найден"));
+        TeacherEntity teacherEntity = getTeacher(id);
         return teacherMapper.toGetTeacherDTO(teacherEntity);
     }
 
     @Override
     public void deleteTeacherById(Long id) throws ResponseStatusException {
-        TeacherEntity teacherEntity = teacherRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Учитель не найден с айди" + id));
+        TeacherEntity teacherEntity = getTeacher(id);
         teacherRepository.delete(teacherEntity);
     }
 
     @Override
     public GetTeacherDTO updateTeacher(Long id, UpdateTeacherDTO dto) throws ResponseStatusException {
-        if (!teacherRepository.existsById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Учитель не найден с айди " + id);
-        }
+        getTeacher(id);
         TeacherEntity changedEntity = this.teacherMapper.changeEntity(id, dto);
-
-        TeacherEntity updatedEntity = this.teacherRepository.save(changedEntity);
-
-        return this.teacherMapper.toGetTeacherDTO(updatedEntity);
+        this.teacherRepository.save(changedEntity);
+        return this.teacherMapper.toGetTeacherDTO(changedEntity);
     }
 }
