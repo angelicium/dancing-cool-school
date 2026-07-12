@@ -22,4 +22,6 @@ public interface TeacherMapper {
 
     @Mapping(target = "id", source = "id")
     TeacherEntity changeEntity(Long id, UpdateTeacherDTO dto);
+
+    UpdateTeacherDTO updateDTO(TeacherEntity teacherEntity);
 }
