@@ -22,4 +22,6 @@ public interface StudentMapper {
 
     @Mapping(target = "id", source = "id")
     StudentEntity changeEntity (Long id, UpdateStudentDTO dto);
+
+    UpdateStudentDTO updateDTO(StudentEntity studentEntity);
 }

@@ -24,7 +24,7 @@ public class StudentService implements IStudentService {
 
     private StudentEntity getStudent(Long id) throws ResponseStatusException {
         return studentRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ученик не найден с айди" + id));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ученик не найден с айди " + id));
     }
 
     @Override
@@ -50,6 +50,7 @@ public class StudentService implements IStudentService {
     public GetStudentDTO updateStudent(Long id, UpdateStudentDTO dto) throws ResponseStatusException {
         getStudent(id);
         StudentEntity changedEntity = this.studentMapper.changeEntity(id, dto);
+        this.studentRepository.save(changedEntity);
         return this.studentMapper.toGetStudentDTO(changedEntity);
     }
 
