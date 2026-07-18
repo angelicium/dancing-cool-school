@@ -50,7 +50,7 @@ public class StudentControllerIT {
                 "Фамилия",
                 "Отчество",
                 22,
-                "юзернейм",
+                prefix + "юзернейм",
                 "12345"
         );
     }
@@ -134,6 +134,23 @@ public class StudentControllerIT {
                         jsonPath("$.data.lastName")
                                 .value("Олегов")
                 );
+    }
+
+    @Test
+    void testCreateStudent_usernameExists_badRequest() throws Exception {
+        List<StudentEntity> studentsEntities = List.of(
+                getTestStudentEntity("first"),
+                getTestStudentEntity("second")
+        );
+        studentRepository.saveAll(studentsEntities);
+        studentsEntities.get(0).setUsername("second _username");
+        mockMvc.perform(
+                put("/api/v1/students/" + studentsEntities.get(0).getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                objectMapper.writeValueAsString(studentsEntities.get(0))
+                        )
+        ).andExpect(status().isBadRequest());
     }
 
     @Test

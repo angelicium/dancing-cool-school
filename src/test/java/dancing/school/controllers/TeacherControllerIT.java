@@ -3,6 +3,7 @@ package dancing.school.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dancing.school.dto.CreateTeacherDTO;
 import dancing.school.dto.UpdateTeacherDTO;
+import dancing.school.entities.StudentEntity;
 import dancing.school.entities.TeacherEntity;
 import dancing.school.mappers.TeacherMapper;
 import dancing.school.repositories.TeacherRepository;
@@ -102,6 +103,23 @@ public class TeacherControllerIT {
     }
 
     @Test
+    void testCreateTeacher_usernameExists_badRequest() throws Exception {
+        List<TeacherEntity> teacherEntities = List.of(
+                getTestTeacherEntity("first"),
+                getTestTeacherEntity("second")
+        );
+        teacherRepository.saveAll(teacherEntities);
+        teacherEntities.get(0).setUsername("second _username");
+        mockMvc.perform(
+                put("/api/v1/students/" + teacherEntities.get(0).getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                objectMapper.writeValueAsString(teacherEntities.get(0))
+                        )
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
     void testGetTeachers_success() throws Exception {
         List<TeacherEntity> teachersEntities = List.of(
                 getTestTeacherEntity("first"),
@@ -178,7 +196,7 @@ public class TeacherControllerIT {
     }
 
     @Test
-    void testUpdateTeacher_badRequest() throws Exception {
+    void testUpdateTeacher_notExistTeacher_badRequest() throws Exception {
         var updateTeacherDTO = getTestUpdateTeacherDTO("first");
         mockMvc.perform(
                 put("/api/v1/teachers/1")
@@ -187,5 +205,24 @@ public class TeacherControllerIT {
                                 objectMapper.writeValueAsString(updateTeacherDTO)
                         )
         ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUpdateTeacher_usernameExists_badRequest() throws Exception {
+        List<TeacherEntity> teachersEntities = List.of(
+                getTestTeacherEntity("first"),
+                getTestTeacherEntity("second")
+        );
+        teacherRepository.saveAll(teachersEntities);
+        UpdateTeacherDTO dto = teacherMapper.updateDTO(teachersEntities.get(0));
+        dto.setUsername("second _username");
+        mockMvc.perform(
+                put("/api/v1/teachers/" + teachersEntities.get(0).getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                objectMapper.writeValueAsString(dto)
+                        )
+        ).andExpect(status().isBadRequest());
+
     }
 }
