@@ -2,11 +2,8 @@ package dancing.school.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dancing.school.dto.CreateStudentDTO;
-import dancing.school.dto.CreateTeacherDTO;
 import dancing.school.dto.UpdateStudentDTO;
-import dancing.school.dto.UpdateTeacherDTO;
 import dancing.school.entities.StudentEntity;
-import dancing.school.entities.TeacherEntity;
 import dancing.school.mappers.StudentMapper;
 import dancing.school.repositories.StudentRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -49,7 +46,7 @@ public class StudentControllerIT {
 
     private UpdateStudentDTO getTestUpdateStudentDTO(String prefix) {
         return new UpdateStudentDTO(
-                "Имя",
+                prefix + " Имя",
                 "Фамилия",
                 "Отчество",
                 22,
@@ -140,7 +137,7 @@ public class StudentControllerIT {
     }
 
     @Test
-    void updateStudent_success() throws Exception {
+    void testUpdateStudent_success() throws Exception {
         StudentEntity studentEntity = getTestStudentEntity("first");
         studentRepository.save(studentEntity);
         studentEntity.setAge(18);
@@ -159,13 +156,31 @@ public class StudentControllerIT {
     }
 
     @Test
-    void updateStudent_badRequest() throws Exception {
+    void testUpdateStudent_notExistStudent_badRequest() throws Exception {
         var updateStudentDTO = getTestUpdateStudentDTO("first");
         mockMvc.perform(
                 put("/api/v1/students/999")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
                                 objectMapper.writeValueAsString(updateStudentDTO)
+                        )
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUpdateStudent_usernameExists_badRequest() throws Exception {
+        List<StudentEntity> studentsEntities = List.of(
+                getTestStudentEntity("first"),
+                getTestStudentEntity("second")
+        );
+        studentRepository.saveAll(studentsEntities);
+        UpdateStudentDTO dto = studentMapper.updateDTO(studentsEntities.get(0));
+        dto.setUsername("second _username");
+        mockMvc.perform(
+                put("/api/v1/students/" + studentsEntities.get(0).getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(
+                                objectMapper.writeValueAsString(dto)
                         )
         ).andExpect(status().isBadRequest());
     }

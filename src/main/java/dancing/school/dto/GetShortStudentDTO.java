@@ -1,6 +1,5 @@
 package dancing.school.dto;
 
-import dancing.school.entities.TeacherEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GetShortStudentDTO {
+
+    private Long id;
+
     private String firstName;
 
     private String lastName;

@@ -8,13 +8,12 @@ import dancing.school.entities.TeacherEntity;
 import dancing.school.mappers.TeacherMapper;
 import dancing.school.repositories.TeacherRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -30,9 +29,14 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    public GetTeacherDTO createTeacher(CreateTeacherDTO dto) {
+    public GetTeacherDTO createTeacher(CreateTeacherDTO dto) throws ResponseStatusException {
        TeacherEntity teacherEntity = teacherMapper.toEntity(dto);
-       teacherRepository.save(teacherEntity);
+       try {
+           teacherRepository.save(teacherEntity);
+       } catch(DataIntegrityViolationException ex) {
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                   "Такое имя пользователя уже существует");
+       }
 
        return teacherMapper.toGetTeacherDTO(teacherEntity);
     }
@@ -59,7 +63,12 @@ public class TeacherService implements ITeacherService {
     public GetTeacherDTO updateTeacher(Long id, UpdateTeacherDTO dto) throws ResponseStatusException {
         getTeacher(id);
         TeacherEntity changedEntity = this.teacherMapper.changeEntity(id, dto);
-        this.teacherRepository.save(changedEntity);
+        try {
+            this.teacherRepository.save(changedEntity);
+        } catch(DataIntegrityViolationException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Такое имя пользователя уже существует");
+        }
+
         return this.teacherMapper.toGetTeacherDTO(changedEntity);
     }
 }

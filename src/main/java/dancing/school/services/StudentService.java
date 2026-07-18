@@ -8,6 +8,7 @@ import dancing.school.entities.StudentEntity;
 import dancing.school.mappers.StudentMapper;
 import dancing.school.repositories.StudentRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,9 +35,13 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public GetStudentDTO createStudent(CreateStudentDTO dto) {
+    public GetStudentDTO createStudent(CreateStudentDTO dto) throws  ResponseStatusException {
         StudentEntity studentEntity = studentMapper.toEntity(dto);
-        studentRepository.save(studentEntity);
+        try{
+            studentRepository.save(studentEntity);
+        } catch(DataIntegrityViolationException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Такое имя пользователя уже существует");
+        }
         return studentMapper.toGetStudentDTO(studentEntity);
     }
 
@@ -50,7 +55,11 @@ public class StudentService implements IStudentService {
     public GetStudentDTO updateStudent(Long id, UpdateStudentDTO dto) throws ResponseStatusException {
         getStudent(id);
         StudentEntity changedEntity = this.studentMapper.changeEntity(id, dto);
-        this.studentRepository.save(changedEntity);
+        try {
+            this.studentRepository.save(changedEntity);
+        } catch(DataIntegrityViolationException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Такое имя пользователя уже существует");
+        }
         return this.studentMapper.toGetStudentDTO(changedEntity);
     }
 
