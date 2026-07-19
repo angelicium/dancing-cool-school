@@ -24,4 +24,6 @@ public interface TeacherMapper {
     TeacherEntity changeEntity(Long id, UpdateTeacherDTO dto);
 
     UpdateTeacherDTO updateDTO(TeacherEntity teacherEntity);
+
+    CreateTeacherDTO createDTO(TeacherEntity teacherEntity);
 }

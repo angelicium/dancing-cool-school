@@ -23,7 +23,7 @@ public class TeacherService implements ITeacherService {
 
     private TeacherMapper teacherMapper;
 
-    private TeacherEntity getTeacher(Long id) {
+    public TeacherEntity getTeacher(Long id) throws ResponseStatusException {
         return teacherRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Учитель не найден с айди " + id));
     }

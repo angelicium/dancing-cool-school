@@ -138,17 +138,14 @@ public class StudentControllerIT {
 
     @Test
     void testCreateStudent_usernameExists_badRequest() throws Exception {
-        List<StudentEntity> studentsEntities = List.of(
-                getTestStudentEntity("first"),
-                getTestStudentEntity("second")
-        );
-        studentRepository.saveAll(studentsEntities);
-        studentsEntities.get(0).setUsername("second _username");
+        StudentEntity studentEntity = getTestStudentEntity("first");
+        studentRepository.save(studentEntity);
+        CreateStudentDTO dto = studentMapper.createDTO(getTestStudentEntity("first"));
         mockMvc.perform(
-                put("/api/v1/students/" + studentsEntities.get(0).getId())
+                post("/api/v1/students")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
-                                objectMapper.writeValueAsString(studentsEntities.get(0))
+                                objectMapper.writeValueAsString(dto)
                         )
         ).andExpect(status().isBadRequest());
     }

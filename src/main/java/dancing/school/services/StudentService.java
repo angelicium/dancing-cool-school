@@ -23,7 +23,7 @@ public class StudentService implements IStudentService {
 
     private StudentMapper studentMapper;
 
-    private StudentEntity getStudent(Long id) throws ResponseStatusException {
+    public StudentEntity getStudent(Long id) throws ResponseStatusException {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Ученик не найден с айди " + id));
     }

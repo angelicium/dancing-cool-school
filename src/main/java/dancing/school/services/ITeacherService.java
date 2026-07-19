@@ -4,6 +4,7 @@ import dancing.school.dto.CreateTeacherDTO;
 import dancing.school.dto.GetShortTeacherDTO;
 import dancing.school.dto.GetTeacherDTO;
 import dancing.school.dto.UpdateTeacherDTO;
+import dancing.school.entities.TeacherEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.List;
 public interface ITeacherService {
 
     GetTeacherDTO createTeacher(CreateTeacherDTO dto) throws ResponseStatusException;
+
+    TeacherEntity getTeacher(Long id) throws ResponseStatusException;
 
     List<GetShortTeacherDTO> getTeachers();
 

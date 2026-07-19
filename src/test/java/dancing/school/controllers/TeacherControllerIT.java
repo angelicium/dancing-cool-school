@@ -3,7 +3,6 @@ package dancing.school.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dancing.school.dto.CreateTeacherDTO;
 import dancing.school.dto.UpdateTeacherDTO;
-import dancing.school.entities.StudentEntity;
 import dancing.school.entities.TeacherEntity;
 import dancing.school.mappers.TeacherMapper;
 import dancing.school.repositories.TeacherRepository;
@@ -104,17 +103,14 @@ public class TeacherControllerIT {
 
     @Test
     void testCreateTeacher_usernameExists_badRequest() throws Exception {
-        List<TeacherEntity> teacherEntities = List.of(
-                getTestTeacherEntity("first"),
-                getTestTeacherEntity("second")
-        );
-        teacherRepository.saveAll(teacherEntities);
-        teacherEntities.get(0).setUsername("second _username");
+        TeacherEntity entity = getTestTeacherEntity("first");
+        teacherRepository.save(entity);
+        CreateTeacherDTO dto = teacherMapper.createDTO(getTestTeacherEntity("first"));
         mockMvc.perform(
-                put("/api/v1/students/" + teacherEntities.get(0).getId())
+                post("/api/v1/teachers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(
-                                objectMapper.writeValueAsString(teacherEntities.get(0))
+                                objectMapper.writeValueAsString(dto)
                         )
         ).andExpect(status().isBadRequest());
     }
