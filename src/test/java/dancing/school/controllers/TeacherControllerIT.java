@@ -67,7 +67,8 @@ public class TeacherControllerIT {
                 "обо мне",
                 22,
                 prefix + " _username",
-                "12345"
+                "12345",
+                null
         );
     }
 

@@ -64,6 +64,7 @@ public class RequestControllerIT {
         teacher.setAge(40);
         teacher.setAboutMe("лалаалал");
         teacher.setExperience(10);
+        teacher.setGroups(null);
         teacher = teacherRepository.save(teacher);
 
         mockMvc.perform(post("/api/v1/requests/student/{idStudent}/teacher/{idTeacher}",
