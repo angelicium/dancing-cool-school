@@ -1,9 +1,10 @@
 package dancing.school.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "teachers")
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class TeacherEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "teacher_id")
     private Long id;
 
@@ -40,4 +41,9 @@ public class TeacherEntity {
 
     @Column(length = 50, nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<DanceGroupEntity> groups = new ArrayList<>();
 }

@@ -55,4 +55,14 @@ public class TeacherController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/{id}/groups")
+    public ResponseEntity<ResponseDTO<List<GetDanceGroupDTO>>> getTeacherGroups(@PathVariable("id") Long id) {
+        List<GetDanceGroupDTO> groups = teacherService.getDanceGroupsbyTeacherId(id);
+
+        var responseDTO = new ResponseDTO<List<GetDanceGroupDTO>>();
+        responseDTO.setData(groups);
+
+        return ResponseEntity.ok(responseDTO);
+    }
 }
