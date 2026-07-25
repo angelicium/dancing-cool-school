@@ -25,6 +25,9 @@ public class RequestEntity {
     @JoinColumn(name = "teacher_id")
     private TeacherEntity teacherEntity;
 
+    @Column(nullable = false)
+    private String description;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusRequestEnum status;

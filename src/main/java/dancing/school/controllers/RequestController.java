@@ -1,12 +1,10 @@
 package dancing.school.controllers;
 
+import dancing.school.dto.CreateRequestDTO;
 import dancing.school.services.IRequestService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/requests")
@@ -16,8 +14,11 @@ public class RequestController {
 
     @PostMapping("/student/{idStudent}/teacher/{idTeacher}")
     public ResponseEntity<Void> sendRequestTeacher(@PathVariable("idStudent") Long idStudent,
-                                                   @PathVariable ("idTeacher") Long idTeacher) {
-        requestService.sendRequestTeacher(idStudent, idTeacher);
+                                                   @PathVariable ("idTeacher") Long idTeacher,
+                                                   @RequestBody CreateRequestDTO dto) {
+        requestService.sendRequestTeacher(idStudent, idTeacher, dto);
         return ResponseEntity.ok().build();
     }
+
+
 }

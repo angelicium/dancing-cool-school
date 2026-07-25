@@ -1,5 +1,6 @@
 package dancing.school.services;
 
+import dancing.school.dto.CreateRequestDTO;
 import dancing.school.entities.RequestEntity;
 import dancing.school.entities.StudentEntity;
 import dancing.school.entities.TeacherEntity;
@@ -19,7 +20,9 @@ public class RequestService implements IRequestService {
     private ITeacherService teacherService;
 
     @Override
-    public void sendRequestTeacher(Long idStudent, Long idTeacher) throws ResponseStatusException {
+    public void sendRequestTeacher(Long idStudent,
+                                   Long idTeacher,
+                                   CreateRequestDTO dto) throws ResponseStatusException {
         StudentEntity studentEntity = studentService.getStudent(idStudent);
 
         TeacherEntity teacherEntity = teacherService.getTeacher(idTeacher);
@@ -28,6 +31,7 @@ public class RequestService implements IRequestService {
                 null,
                 studentEntity,
                 teacherEntity,
+                dto.getDescription(),
                 StatusRequestEnum.NOT_VIEWED
         );
 

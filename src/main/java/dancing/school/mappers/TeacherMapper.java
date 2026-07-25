@@ -14,6 +14,7 @@ import java.util.List;
 public interface TeacherMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "groups",  ignore = true)
     TeacherEntity toEntity(CreateTeacherDTO dto);
 
     GetTeacherDTO toGetTeacherDTO(TeacherEntity teacherEntity);
@@ -21,6 +22,7 @@ public interface TeacherMapper {
     List<GetShortTeacherDTO> toGetShortTeacherDTOs(List<TeacherEntity> teacherEntities);
 
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "groups",  ignore = true)
     TeacherEntity changeEntity(Long id, UpdateTeacherDTO dto);
 
     UpdateTeacherDTO updateDTO(TeacherEntity teacherEntity);
