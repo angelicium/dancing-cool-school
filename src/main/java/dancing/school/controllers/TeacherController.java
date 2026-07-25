@@ -65,4 +65,48 @@ public class TeacherController {
 
         return ResponseEntity.ok(responseDTO);
     }
+
+    @GetMapping("/groups")
+    public ResponseEntity<ResponseDTO<List<GetDanceGroupDTO>>> getAllDanceGroups() {
+        List<GetDanceGroupDTO> groups = teacherService.getAllDanceGroups();
+        var responseDTO = new ResponseDTO<List<GetDanceGroupDTO>>();
+        responseDTO.setData(groups);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/groups/{idGroup}")
+    public ResponseEntity<ResponseDTO<GetDanceGroupDTO>> getDanceGroupById(@PathVariable("idGroup") Long idGroup) {
+        GetDanceGroupDTO group = teacherService.getDanceGroupById(idGroup);
+
+        var responseDTO = new ResponseDTO<GetDanceGroupDTO>();
+        responseDTO.setData(group);
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @PostMapping("/{idTeacher}/groups")
+    public ResponseEntity<ResponseDTO<GetDanceGroupDTO>> createDanceGroup(@RequestBody CreateDanceGroupDTO dto,
+                                                                          @PathVariable("idTeacher") Long idTeacher) {
+        GetDanceGroupDTO group = teacherService.createDanceGroup(dto,idTeacher);
+        var responseDTO = new ResponseDTO<GetDanceGroupDTO>();
+        responseDTO.setData(group);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
+    }
+
+    @PutMapping("/{idGroup}/groups")
+    public ResponseEntity<ResponseDTO<GetDanceGroupDTO>>  updateDanceGroup(@RequestBody UpdateDanceGroupDTO dto,
+                                                                           @PathVariable("idGroup") Long idGroup) {
+        GetDanceGroupDTO group = teacherService.updateDanceGroup(idGroup, dto);
+        ResponseDTO<GetDanceGroupDTO> response = ResponseDTO
+                .<GetDanceGroupDTO>builder()
+                .data(group)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{idGroup}/groups")
+    public ResponseEntity<ResponseDTO<Void>> deleteDanceGroup(@PathVariable("idGroup") Long id) {
+        teacherService.deleteDanceGroupById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

@@ -32,6 +32,11 @@ public class TeacherService implements ITeacherService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Учитель не найден с айди " + id));
     }
 
+    public DanceGroupEntity getDanceGroup(Long id) throws ResponseStatusException {
+        return danceGroupRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Танцевальная группа не найдена с айди " + id));
+    }
+
     @Override
     public GetTeacherDTO createTeacher(CreateTeacherDTO dto) throws ResponseStatusException {
        TeacherEntity teacherEntity = teacherMapper.toEntity(dto);
@@ -82,5 +87,40 @@ public class TeacherService implements ITeacherService {
         List<DanceGroupEntity> groups = danceGroupRepository.findAllByTeacherId(id);
 
         return danceGroupMapper.toDtos(groups);
+    }
+
+    @Override
+    public GetDanceGroupDTO createDanceGroup(CreateDanceGroupDTO dto, Long idTeacher) throws ResponseStatusException {
+        DanceGroupEntity danceGroupEntity = danceGroupMapper.toEntity(dto);
+        TeacherEntity teacher = getTeacher(idTeacher);
+        danceGroupEntity.setTeacher(teacher);
+        DanceGroupEntity savedEntity = danceGroupRepository.save(danceGroupEntity);
+        return danceGroupMapper.toDto(savedEntity);
+    }
+
+    @Override
+    public GetDanceGroupDTO updateDanceGroup(Long id, UpdateDanceGroupDTO dto) throws ResponseStatusException {
+        DanceGroupEntity existingGroup = getDanceGroup(id);
+        danceGroupMapper.updateEntityFromDto(dto, existingGroup);
+        DanceGroupEntity updatedEntity = danceGroupRepository.save(existingGroup);
+        return danceGroupMapper.toDto(updatedEntity);
+    }
+
+    @Override
+    public List<GetDanceGroupDTO> getAllDanceGroups() {
+        List<DanceGroupEntity> groups = danceGroupRepository.findAll();
+        return danceGroupMapper.toDtos(groups);
+    }
+
+    @Override
+    public void deleteDanceGroupById(Long id) {
+        DanceGroupEntity entity = getDanceGroup(id);
+        danceGroupRepository.delete(entity);
+    }
+
+    @Override
+    public GetDanceGroupDTO getDanceGroupById(Long id) throws ResponseStatusException {
+        DanceGroupEntity entity = getDanceGroup(id);
+        return danceGroupMapper.toDto(entity);
     }
 }

@@ -1,9 +1,12 @@
 package dancing.school.mappers;
 
+import dancing.school.dto.CreateDanceGroupDTO;
 import dancing.school.dto.GetDanceGroupDTO;
+import dancing.school.dto.UpdateDanceGroupDTO;
 import dancing.school.entities.DanceGroupEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
@@ -15,4 +18,11 @@ public interface DanceGroupMapper {
     GetDanceGroupDTO toDto(DanceGroupEntity entity);
 
     List<GetDanceGroupDTO> toDtos(List<DanceGroupEntity> entities);
+
+    @Mapping(target = "id", ignore = true)
+    DanceGroupEntity toEntity(CreateDanceGroupDTO dto);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "teacher", ignore = true)
+    void updateEntityFromDto(UpdateDanceGroupDTO dto, @MappingTarget DanceGroupEntity entity);
 }
