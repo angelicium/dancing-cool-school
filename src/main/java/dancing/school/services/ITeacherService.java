@@ -20,5 +20,5 @@ public interface ITeacherService {
 
     GetTeacherDTO updateTeacher(Long id, UpdateTeacherDTO dto) throws ResponseStatusException;
 
-    List<GetDanceGroupDTO> getDanceGroupsbyTeacherId(Long id);
+    List<GetDanceGroupDTO> getDanceGroupsByTeacherId(Long id);
 }

@@ -76,9 +76,9 @@ public class RequestControllerIT {
 
         RequestEntity actualRequest = savedRequests.get(0);
 
-        assertEquals(student.getId(), actualRequest.getStudentEntity().getId());
+        assertEquals(student.getId(), actualRequest.getStudent().getId());
 
-        assertEquals(teacher.getId(), actualRequest.getTeacherEntity().getId());
+        assertEquals(teacher.getId(), actualRequest.getTeacher().getId());
 
         assertEquals(StatusRequestEnum.NOT_VIEWED, actualRequest.getStatus());
     }

@@ -19,11 +19,11 @@ public class RequestEntity {
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    private StudentEntity studentEntity;
+    private StudentEntity student;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id")
-    private TeacherEntity teacherEntity;
+    private TeacherEntity teacher;
 
     @Column(nullable = false)
     private String description;

@@ -58,7 +58,7 @@ public class TeacherController {
 
     @GetMapping("/{id}/groups")
     public ResponseEntity<ResponseDTO<List<GetDanceGroupDTO>>> getTeacherGroups(@PathVariable("id") Long id) {
-        List<GetDanceGroupDTO> groups = teacherService.getDanceGroupsbyTeacherId(id);
+        List<GetDanceGroupDTO> groups = teacherService.getDanceGroupsByTeacherId(id);
 
         var responseDTO = new ResponseDTO<List<GetDanceGroupDTO>>();
         responseDTO.setData(groups);

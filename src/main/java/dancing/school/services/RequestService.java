@@ -1,14 +1,19 @@
 package dancing.school.services;
 
 import dancing.school.dto.CreateRequestDTO;
+import dancing.school.dto.GetRequestDTO;
 import dancing.school.entities.RequestEntity;
 import dancing.school.entities.StudentEntity;
 import dancing.school.entities.TeacherEntity;
 import dancing.school.enums.StatusRequestEnum;
+import dancing.school.mappers.RequestMapper;
 import dancing.school.repositories.RequestRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -19,6 +24,8 @@ public class RequestService implements IRequestService {
 
     private ITeacherService teacherService;
 
+    private RequestMapper requestMapper;
+
     @Override
     public void sendRequestTeacher(Long idStudent,
                                    Long idTeacher,
@@ -27,7 +34,17 @@ public class RequestService implements IRequestService {
 
         TeacherEntity teacherEntity = teacherService.getTeacher(idTeacher);
 
-        var requestEntity = new RequestEntity(
+        RequestEntity requestEntity = requestRepository.findByTeacherIdAndStudentId(
+                idTeacher,
+                idStudent
+        );
+
+        if(requestEntity != null)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Вы уже отправили заявку!");
+
+
+        var newRequestEntity = new RequestEntity(
                 null,
                 studentEntity,
                 teacherEntity,
@@ -35,6 +52,12 @@ public class RequestService implements IRequestService {
                 StatusRequestEnum.NOT_VIEWED
         );
 
-        requestRepository.save(requestEntity);
+        requestRepository.save(newRequestEntity);
+    }
+
+    @Override
+    public List<GetRequestDTO> getRequests(Long idTeacher) {
+       List<RequestEntity> requests = requestRepository.findAllByTeacherId(idTeacher);
+       return requestMapper.toGetRequestDTOs(requests);
     }
 }
