@@ -11,7 +11,7 @@ import lombok.*;
 public class DanceGroupEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "dance_group_id")
     private Long id;
 
@@ -19,7 +19,5 @@ public class DanceGroupEntity {
 
     @ManyToOne
     @JoinColumn(name = "teacher_id", nullable = false)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private TeacherEntity teacher;
 }

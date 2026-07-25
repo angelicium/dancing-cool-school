@@ -14,7 +14,7 @@ import java.util.List;
 public class TeacherEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "teacher_id")
     private Long id;
 
@@ -43,7 +43,5 @@ public class TeacherEntity {
     private String password;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     private List<DanceGroupEntity> groups = new ArrayList<>();
 }
