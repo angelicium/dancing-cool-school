@@ -20,7 +20,7 @@ public interface ITeacherService {
 
     GetTeacherDTO updateTeacher(Long id, UpdateTeacherDTO dto) throws ResponseStatusException;
 
-    List<GetDanceGroupDTO> getDanceGroupsByTeacherId(Long id);
+    List<GetShortDanceGroupDTO> getDanceGroupsByTeacherId(Long id);
 
     GetDanceGroupDTO createDanceGroup(CreateDanceGroupDTO dto, Long idTeacher) throws ResponseStatusException;
 

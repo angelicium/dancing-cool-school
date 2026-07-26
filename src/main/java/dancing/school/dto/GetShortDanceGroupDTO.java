@@ -4,16 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetDanceGroupDTO {
+public class GetShortDanceGroupDTO {
 
     private Long id;
 
     private String danceGroupName;
-
-    List<GetShortStudentDTO> students;
 }

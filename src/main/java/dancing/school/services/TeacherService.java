@@ -82,7 +82,7 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    public List<GetDanceGroupDTO> getDanceGroupsByTeacherId(Long id) {
+    public List<GetShortDanceGroupDTO> getDanceGroupsByTeacherId(Long id) {
         getTeacher(id);
         List<DanceGroupEntity> groups = danceGroupRepository.findAllByTeacherId(id);
 

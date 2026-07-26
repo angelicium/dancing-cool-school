@@ -2,6 +2,7 @@ package dancing.school.mappers;
 
 import dancing.school.dto.CreateDanceGroupDTO;
 import dancing.school.dto.GetDanceGroupDTO;
+import dancing.school.dto.GetShortDanceGroupDTO;
 import dancing.school.dto.UpdateDanceGroupDTO;
 import dancing.school.entities.DanceGroupEntity;
 import org.mapstruct.Mapper;
@@ -17,7 +18,7 @@ public interface DanceGroupMapper {
     @Mapping(target = "teacherPatronymic", source = "teacher.patronymic")
     GetDanceGroupDTO toDto(DanceGroupEntity entity);
 
-    List<GetDanceGroupDTO> toDtos(List<DanceGroupEntity> entities);
+    List<GetShortDanceGroupDTO> toDtos(List<DanceGroupEntity> entities);
 
     @Mapping(target = "id", ignore = true)
     DanceGroupEntity toEntity(CreateDanceGroupDTO dto);
