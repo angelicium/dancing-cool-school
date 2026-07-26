@@ -107,12 +107,6 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    public List<GetDanceGroupDTO> getAllDanceGroups() {
-        List<DanceGroupEntity> groups = danceGroupRepository.findAll();
-        return danceGroupMapper.toDtos(groups);
-    }
-
-    @Override
     public void deleteDanceGroupById(Long id) {
         DanceGroupEntity entity = getDanceGroup(id);
         danceGroupRepository.delete(entity);

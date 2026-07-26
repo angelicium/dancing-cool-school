@@ -66,14 +66,6 @@ public class TeacherController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @GetMapping("/groups")
-    public ResponseEntity<ResponseDTO<List<GetDanceGroupDTO>>> getAllDanceGroups() {
-        List<GetDanceGroupDTO> groups = teacherService.getAllDanceGroups();
-        var responseDTO = new ResponseDTO<List<GetDanceGroupDTO>>();
-        responseDTO.setData(groups);
-        return ResponseEntity.ok(responseDTO);
-    }
-
     @GetMapping("/groups/{idGroup}")
     public ResponseEntity<ResponseDTO<GetDanceGroupDTO>> getDanceGroupById(@PathVariable("idGroup") Long idGroup) {
         GetDanceGroupDTO group = teacherService.getDanceGroupById(idGroup);
@@ -97,11 +89,9 @@ public class TeacherController {
     public ResponseEntity<ResponseDTO<GetDanceGroupDTO>>  updateDanceGroup(@RequestBody UpdateDanceGroupDTO dto,
                                                                            @PathVariable("idGroup") Long idGroup) {
         GetDanceGroupDTO group = teacherService.updateDanceGroup(idGroup, dto);
-        ResponseDTO<GetDanceGroupDTO> response = ResponseDTO
-                .<GetDanceGroupDTO>builder()
-                .data(group)
-                .build();
-        return ResponseEntity.ok(response);
+        var responseDTO = new ResponseDTO<GetDanceGroupDTO>();
+                responseDTO.setData(group);
+        return ResponseEntity.ok(responseDTO);
     }
 
     @DeleteMapping("/{idGroup}/groups")

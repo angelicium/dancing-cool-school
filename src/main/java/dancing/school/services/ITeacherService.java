@@ -26,8 +26,6 @@ public interface ITeacherService {
 
     GetDanceGroupDTO updateDanceGroup(Long id, UpdateDanceGroupDTO dto) throws ResponseStatusException;
 
-    List<GetDanceGroupDTO> getAllDanceGroups();
-
     void deleteDanceGroupById(Long id);
 
     GetDanceGroupDTO getDanceGroupById(Long id) throws ResponseStatusException;

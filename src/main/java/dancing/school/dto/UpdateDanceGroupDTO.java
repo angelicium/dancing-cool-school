@@ -10,10 +10,4 @@ import lombok.NoArgsConstructor;
 public class UpdateDanceGroupDTO {
 
     private String danceGroupName;
-
-    private String teacherFirstName;
-
-    private String teacherLastName;
-
-    private String teacherPatronymic;
 }
