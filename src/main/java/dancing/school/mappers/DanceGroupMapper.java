@@ -13,14 +13,14 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface DanceGroupMapper {
-    @Mapping(target = "teacherFirstName", source = "teacher.firstName")
-    @Mapping(target = "teacherLastName", source = "teacher.lastName")
-    @Mapping(target = "teacherPatronymic", source = "teacher.patronymic")
+    @Mapping(target = "students", ignore = true)
+    // после установки связи в базе игнор будет убран
     GetDanceGroupDTO toDto(DanceGroupEntity entity);
 
     List<GetShortDanceGroupDTO> toDtos(List<DanceGroupEntity> entities);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "teacher",  ignore = true)
     DanceGroupEntity toEntity(CreateDanceGroupDTO dto);
 
     @Mapping(target = "id", ignore = true)

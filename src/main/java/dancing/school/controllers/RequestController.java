@@ -2,6 +2,7 @@ package dancing.school.controllers;
 
 import dancing.school.dto.CreateRequestDTO;
 import dancing.school.dto.GetRequestDTO;
+import dancing.school.dto.ReplyRequestDTO;
 import dancing.school.dto.ResponseDTO;
 import dancing.school.services.IRequestService;
 import lombok.AllArgsConstructor;
@@ -31,5 +32,12 @@ public class RequestController {
         var response = new ResponseDTO<List<GetRequestDTO>>();
         response.setData(requestsDTO);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{requestId}/reply")
+    public ResponseEntity<Void> replyRequest(@PathVariable ("requestId") Long idRequest,
+                                             @RequestBody ReplyRequestDTO dto) {
+        requestService.replyRequest(idRequest, dto);
+        return ResponseEntity.ok().build();
     }
 }

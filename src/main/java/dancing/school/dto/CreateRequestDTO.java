@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateRequestDTO {
 
-    private String description;
+    private String messageStudent;
 }

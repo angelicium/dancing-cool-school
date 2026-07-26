@@ -26,7 +26,9 @@ public class RequestEntity {
     private TeacherEntity teacher;
 
     @Column(nullable = false)
-    private String description;
+    private String messageStudent;
+
+    private String messageTeacher;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
