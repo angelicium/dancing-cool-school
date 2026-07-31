@@ -1,10 +1,15 @@
 package dancing.school.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dancing.school.dto.CreateDanceGroupDTO;
 import dancing.school.dto.CreateTeacherDTO;
+import dancing.school.dto.UpdateDanceGroupDTO;
 import dancing.school.dto.UpdateTeacherDTO;
+import dancing.school.entities.DanceGroupEntity;
 import dancing.school.entities.TeacherEntity;
 import dancing.school.mappers.TeacherMapper;
+import dancing.school.repositories.DanceGroupRepository;
+import dancing.school.repositories.RequestRepository;
 import dancing.school.repositories.TeacherRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -39,9 +44,25 @@ public class TeacherControllerIT {
     @Autowired
     private TeacherMapper teacherMapper;
 
+    @Autowired
+    private DanceGroupRepository danceGroupRepository;
+
+    @Autowired
+    private RequestRepository requestRepository;
+
     @AfterEach
     void tearDown() {
+        this.requestRepository.deleteAll();
+        this.danceGroupRepository.deleteAll();
         this.teacherRepository.deleteAll();
+    }
+
+    private DanceGroupEntity getTestDanceGroupEntity(String name, TeacherEntity teacher) {
+        return new DanceGroupEntity(
+                null,
+                name,
+                teacher
+        );
     }
 
     private UpdateTeacherDTO getTestUpdateTeacherDTO(String prefix) {
@@ -220,6 +241,113 @@ public class TeacherControllerIT {
                                 objectMapper.writeValueAsString(dto)
                         )
         ).andExpect(status().isBadRequest());
+    }
 
+    @Test
+    void testGetTeacherGroups_success() throws Exception {
+        TeacherEntity teacher = teacherRepository.save(getTestTeacherEntity("first"));
+
+        DanceGroupEntity group1 = getTestDanceGroupEntity("Хип-хоп", teacher);
+        DanceGroupEntity group2 = getTestDanceGroupEntity("Сальса", teacher);
+        danceGroupRepository.saveAll(List.of(group1, group2));
+
+        mockMvc.perform(
+                        get("/api/v1/teachers/" + teacher.getId() + "/groups")
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.data[0].danceGroupName").value("Хип-хоп"))
+                .andExpect(jsonPath("$.data[1].danceGroupName").value("Сальса"));
+    }
+
+    @Test
+    void testGetTeacherGroups_teacherNotFound_badRequest() throws Exception {
+        mockMvc.perform(
+                get("/api/v1/teachers/999/groups")
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testGetDanceGroupById_success() throws Exception {
+        TeacherEntity teacher = teacherRepository.save(getTestTeacherEntity("second"));
+        DanceGroupEntity group = danceGroupRepository.save(getTestDanceGroupEntity("Вог", teacher));
+
+        mockMvc.perform(
+                        get("/api/v1/teachers/groups/" + group.getId())
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.danceGroupName").value("Вог"));
+    }
+
+    @Test
+    void testGetDanceGroupById_groupNotFound_badRequest() throws Exception {
+        mockMvc.perform(
+                get("/api/v1/teachers/groups/999")
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testCreateDanceGroup_success() throws Exception {
+        TeacherEntity teacher = teacherRepository.save(getTestTeacherEntity("first"));
+
+        var createDanceGroupDTO = new CreateDanceGroupDTO("Джаз-Фанк");
+
+        mockMvc.perform(
+                        post("/api/v1/teachers/" + teacher.getId() + "/groups")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(createDanceGroupDTO))
+                ).andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.danceGroupName").value("Джаз-Фанк"));
+    }
+
+    @Test
+    void testCreateDanceGroup_teacherNotFound_badRequest() throws Exception {
+        var createDanceGroupDTO = new CreateDanceGroupDTO("Джаз-Фанк");
+
+        mockMvc.perform(
+                post("/api/v1/teachers/999/groups")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createDanceGroupDTO))
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testUpdateDanceGroup_success() throws Exception {
+        TeacherEntity teacher = teacherRepository.save(getTestTeacherEntity("first"));
+        DanceGroupEntity group = danceGroupRepository.save(getTestDanceGroupEntity("Старое название", teacher));
+
+        var updateDanceGroupDTO = new UpdateDanceGroupDTO("Новое название");
+
+        mockMvc.perform(
+                        put("/api/v1/teachers/groups/" + group.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(updateDanceGroupDTO))
+                ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.danceGroupName").value("Новое название"));
+    }
+
+    @Test
+    void testUpdateDanceGroup_groupNotFound_badRequest() throws Exception {
+        var updateDanceGroupDTO = new UpdateDanceGroupDTO("Новое название");
+
+        mockMvc.perform(
+                put("/api/v1/teachers/groups/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDanceGroupDTO))
+        ).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testDeleteDanceGroup_success() throws Exception {
+        TeacherEntity teacher = teacherRepository.save(getTestTeacherEntity("first"));
+        DanceGroupEntity group = danceGroupRepository.save(getTestDanceGroupEntity("Балет", teacher));
+
+        mockMvc.perform(
+                delete("/api/v1/teachers/groups/" + group.getId())
+        ).andExpect(status().isNoContent());
+    }
+
+    @Test
+    void testDeleteDanceGroup_groupNotFound_badRequest() throws Exception {
+        mockMvc.perform(
+                delete("/api/v1/teachers/groups/999")
+        ).andExpect(status().isBadRequest());
     }
 }

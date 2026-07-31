@@ -1,6 +1,14 @@
 package dancing.school.controllers;
 
-import dancing.school.dto.*;
+import dancing.school.dto.CreateDanceGroupDTO;
+import dancing.school.dto.CreateTeacherDTO;
+import dancing.school.dto.GetDanceGroupDTO;
+import dancing.school.dto.GetShortDanceGroupDTO;
+import dancing.school.dto.GetShortTeacherDTO;
+import dancing.school.dto.GetTeacherDTO;
+import dancing.school.dto.ResponseDTO;
+import dancing.school.dto.UpdateDanceGroupDTO;
+import dancing.school.dto.UpdateTeacherDTO;
 import dancing.school.services.ITeacherService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

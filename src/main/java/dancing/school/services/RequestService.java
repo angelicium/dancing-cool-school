@@ -2,6 +2,7 @@ package dancing.school.services;
 
 import dancing.school.dto.CreateRequestDTO;
 import dancing.school.dto.GetRequestDTO;
+import dancing.school.dto.GetShortRequestDTO;
 import dancing.school.dto.ReplyRequestDTO;
 import dancing.school.entities.DanceGroupEntity;
 import dancing.school.entities.RequestEntity;
@@ -28,7 +29,7 @@ public class RequestService implements IRequestService {
 
     private RequestMapper requestMapper;
 
-    private RequestEntity getRequestById(Long id){
+    private RequestEntity findRequestById(Long id){
         return requestRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Такой заявки не существует"));
     }
@@ -64,14 +65,20 @@ public class RequestService implements IRequestService {
     }
 
     @Override
-    public List<GetRequestDTO> getRequests(Long idTeacher) {
+    public List<GetShortRequestDTO> getRequests(Long idTeacher) {
        List<RequestEntity> requests = requestRepository.findAllByTeacherId(idTeacher);
        return requestMapper.toGetRequestDTOs(requests);
     }
 
     @Override
+    public GetRequestDTO getRequestById(Long idRequest) throws ResponseStatusException {
+        RequestEntity requestEntity = findRequestById(idRequest);
+        return requestMapper.toGetRequestDTO(requestEntity);
+    }
+
+    @Override
     public void replyRequest(Long idRequest, ReplyRequestDTO dto) throws ResponseStatusException {
-        RequestEntity request = getRequestById(idRequest);
+        RequestEntity request = findRequestById(idRequest);
         request.setStatus(dto.getStatus());
         request.setMessageTeacher(dto.getMessageTeacher());
         requestRepository.save(request);

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetRequestDTO {
+public class GetShortRequestDTO {
 
     private Long id;
 
@@ -16,10 +16,6 @@ public class GetRequestDTO {
     private String lastName;
 
     private String patronymic;
-
-    private String messageStudent;
-
-    private String messageTeacher;
 
     private int age;
 }

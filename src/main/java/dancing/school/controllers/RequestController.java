@@ -1,9 +1,6 @@
 package dancing.school.controllers;
 
-import dancing.school.dto.CreateRequestDTO;
-import dancing.school.dto.GetRequestDTO;
-import dancing.school.dto.ReplyRequestDTO;
-import dancing.school.dto.ResponseDTO;
+import dancing.school.dto.*;
 import dancing.school.services.IRequestService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,11 +23,19 @@ public class RequestController {
     }
 
     @GetMapping("/teacher/{idTeacher}")
-    public ResponseEntity<ResponseDTO<List<GetRequestDTO>>> getRequests(@PathVariable ("idTeacher") Long idTeacher){
-        List<GetRequestDTO> requestsDTO = requestService.getRequests(idTeacher);
+    public ResponseEntity<ResponseDTO<List<GetShortRequestDTO>>> getRequests(@PathVariable ("idTeacher") Long idTeacher){
+        List<GetShortRequestDTO> requestsDTO = requestService.getRequests(idTeacher);
 
-        var response = new ResponseDTO<List<GetRequestDTO>>();
+        var response = new ResponseDTO<List<GetShortRequestDTO>>();
         response.setData(requestsDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{requestId}")
+    public ResponseEntity<ResponseDTO<GetRequestDTO>> getRequestById(@PathVariable("requestId") Long requestId) {
+        GetRequestDTO requestDTO = requestService.getRequestById(requestId);
+        var response = new ResponseDTO<GetRequestDTO>();
+        response.setData(requestDTO);
         return ResponseEntity.ok(response);
     }
 
