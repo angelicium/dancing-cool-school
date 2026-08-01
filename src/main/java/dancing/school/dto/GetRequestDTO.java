@@ -11,6 +11,8 @@ public class GetRequestDTO {
 
     private Long id;
 
+    private Enum status;
+
     private String firstName;
 
     private String lastName;
