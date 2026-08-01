@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "dance_groups")
@@ -26,6 +27,7 @@ public class DanceGroupEntity {
     private String danceGroupName;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "teacher_id", nullable = false)
     private TeacherEntity teacher;
 }

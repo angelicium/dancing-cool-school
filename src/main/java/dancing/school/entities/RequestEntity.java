@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "requests")
@@ -26,10 +27,12 @@ public class RequestEntity {
     private Long id;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "student_id")
     private StudentEntity student;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "teacher_id")
     private TeacherEntity teacher;
 

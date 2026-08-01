@@ -4,13 +4,12 @@ import dancing.school.dto.CreateRequestDTO;
 import dancing.school.dto.GetRequestDTO;
 import dancing.school.dto.GetShortRequestDTO;
 import dancing.school.dto.ReplyRequestDTO;
-import dancing.school.entities.DanceGroupEntity;
-import dancing.school.entities.RequestEntity;
-import dancing.school.entities.StudentEntity;
-import dancing.school.entities.TeacherEntity;
+import dancing.school.entities.*;
 import dancing.school.enums.StatusRequestEnum;
 import dancing.school.mappers.RequestMapper;
 import dancing.school.repositories.RequestRepository;
+import dancing.school.repositories.StudentDanceGroupRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,6 +21,8 @@ import java.util.List;
 @AllArgsConstructor
 public class RequestService implements IRequestService {
     private RequestRepository requestRepository;
+
+    private StudentDanceGroupRepository studentDanceGroupRepository;
 
     private IStudentService studentService;
 
@@ -77,13 +78,30 @@ public class RequestService implements IRequestService {
     }
 
     @Override
+    @Transactional
     public void replyRequest(Long idRequest, ReplyRequestDTO dto) throws ResponseStatusException {
         RequestEntity request = findRequestById(idRequest);
+
+        if(request.getStatus() != StatusRequestEnum.NOT_VIEWED) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Вы уже ответили на заявку!"
+            );
+        }
+
         request.setStatus(dto.getStatus());
         request.setMessageTeacher(dto.getMessageTeacher());
         requestRepository.save(request);
 
         DanceGroupEntity danceGroupEntity = teacherService.getDanceGroup(dto.getGroupId());
-        //to do: добавление студентов в группу
+
+        StudentDanceGroupEntity studentDanceGroupEntity = new StudentDanceGroupEntity(
+                null,
+                request.getStudent(),
+                danceGroupEntity
+        );
+
+        studentDanceGroupRepository.save(studentDanceGroupEntity);
+
     }
 }

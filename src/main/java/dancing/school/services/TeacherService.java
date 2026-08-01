@@ -2,10 +2,13 @@ package dancing.school.services;
 
 import dancing.school.dto.*;
 import dancing.school.entities.DanceGroupEntity;
+import dancing.school.entities.StudentDanceGroupEntity;
+import dancing.school.entities.StudentEntity;
 import dancing.school.entities.TeacherEntity;
 import dancing.school.mappers.DanceGroupMapper;
 import dancing.school.mappers.TeacherMapper;
 import dancing.school.repositories.DanceGroupRepository;
+import dancing.school.repositories.StudentDanceGroupRepository;
 import dancing.school.repositories.TeacherRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,6 +27,8 @@ public class TeacherService implements ITeacherService {
     private TeacherMapper teacherMapper;
 
     private DanceGroupRepository danceGroupRepository;
+
+    private StudentDanceGroupRepository studentDanceGroupRepository;
 
     private DanceGroupMapper danceGroupMapper;
 
@@ -115,6 +120,11 @@ public class TeacherService implements ITeacherService {
     @Override
     public GetDanceGroupDTO getDanceGroupById(Long id) throws ResponseStatusException {
         DanceGroupEntity entity = getDanceGroup(id);
-        return danceGroupMapper.toDto(entity);
+
+       List<StudentDanceGroupEntity> studentDanceGroupEntities = studentDanceGroupRepository.findAllByDanceGroupEntity(entity);
+       //studentDanceGroupEntities - список связей студентов и групп
+       List<StudentEntity> studentEntities = studentDanceGroupEntities.stream().map(StudentDanceGroupEntity::getStudent)
+               .toList();
+        return danceGroupMapper.toDtoWithStudents(entity, studentEntities);
     }
 }
