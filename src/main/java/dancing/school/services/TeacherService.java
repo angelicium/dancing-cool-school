@@ -1,15 +1,15 @@
 package dancing.school.services;
 
 import dancing.school.dto.*;
-import dancing.school.entities.DanceGroupEntity;
-import dancing.school.entities.StudentDanceGroupEntity;
-import dancing.school.entities.StudentEntity;
-import dancing.school.entities.TeacherEntity;
+import dancing.school.entities.*;
+import dancing.school.enums.StatusRequestEnum;
 import dancing.school.mappers.DanceGroupMapper;
 import dancing.school.mappers.TeacherMapper;
 import dancing.school.repositories.DanceGroupRepository;
+import dancing.school.repositories.RequestRepository;
 import dancing.school.repositories.StudentDanceGroupRepository;
 import dancing.school.repositories.TeacherRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -24,6 +24,8 @@ public class TeacherService implements ITeacherService {
 
     private TeacherRepository teacherRepository;
 
+    private RequestRepository requestRepository;
+
     private TeacherMapper teacherMapper;
 
     private DanceGroupRepository danceGroupRepository;
@@ -31,6 +33,8 @@ public class TeacherService implements ITeacherService {
     private StudentDanceGroupRepository studentDanceGroupRepository;
 
     private DanceGroupMapper danceGroupMapper;
+
+    private IStudentService studentService;
 
     public TeacherEntity getTeacher(Long id) throws ResponseStatusException {
         return teacherRepository.findById(id)
@@ -126,5 +130,42 @@ public class TeacherService implements ITeacherService {
        List<StudentEntity> studentEntities = studentDanceGroupEntities.stream().map(StudentDanceGroupEntity::getStudent)
                .toList();
         return danceGroupMapper.toDtoWithStudents(entity, studentEntities);
+    }
+
+    @Override
+    @Transactional
+    public void removeStudentFromDanceGroup(Long studentId, Long danceGroupId, RemovedStudentDTO dto) throws ResponseStatusException {
+        StudentEntity studentEntity = studentService.getStudent(studentId);
+
+        DanceGroupEntity danceGroupEntity = getDanceGroup(danceGroupId);
+
+        StudentDanceGroupEntity studentDanceGroupEntity = studentDanceGroupRepository.findByDanceGroupEntityAndStudent(
+                danceGroupEntity,
+                studentEntity
+        );
+
+        if (studentDanceGroupEntity == null)
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Студента нет в данной группе"
+            );
+
+        studentDanceGroupRepository.delete(studentDanceGroupEntity);
+
+        RequestEntity requestEntity = requestRepository.findByTeacherIdAndStudentId(
+                danceGroupEntity.getTeacher().getId(),
+                studentId
+        );
+
+        if (requestEntity == null)
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Такой заявки не существует"
+            );
+
+        requestEntity.setStatus(StatusRequestEnum.REMOVED);
+        requestEntity.setMessageTeacher(dto.getMessageTeacher());
+        requestRepository.save(requestEntity);
+
     }
 }

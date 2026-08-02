@@ -77,17 +77,28 @@ public class RequestService implements IRequestService {
         return requestMapper.toGetRequestDTO(requestEntity);
     }
 
+    private void checkStatus(StatusRequestEnum status) throws ResponseStatusException {
+        switch(status) {
+            case NOT_VIEWED:
+            case REMOVED:
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Вы не можете ставить такой статус"
+                );
+        }
+    }
+
     @Override
     @Transactional
     public void replyRequest(Long idRequest, ReplyRequestDTO dto) throws ResponseStatusException {
+        checkStatus(dto.getStatus());
         RequestEntity request = findRequestById(idRequest);
 
-        if(request.getStatus() != StatusRequestEnum.NOT_VIEWED) {
+        if(request.getStatus() != StatusRequestEnum.NOT_VIEWED)
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "Вы уже ответили на заявку!"
             );
-        }
 
         request.setStatus(dto.getStatus());
         request.setMessageTeacher(dto.getMessageTeacher());
@@ -102,6 +113,5 @@ public class RequestService implements IRequestService {
         );
 
         studentDanceGroupRepository.save(studentDanceGroupEntity);
-
     }
 }

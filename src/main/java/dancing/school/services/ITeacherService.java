@@ -32,4 +32,8 @@ public interface ITeacherService {
     void deleteDanceGroupById(Long id);
 
     GetDanceGroupDTO getDanceGroupById(Long id) throws ResponseStatusException;
+
+    void removeStudentFromDanceGroup(Long studentId,
+                                     Long danceGroupId,
+                                     RemovedStudentDTO dto) throws ResponseStatusException;
 }

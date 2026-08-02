@@ -1,14 +1,6 @@
 package dancing.school.controllers;
 
-import dancing.school.dto.CreateDanceGroupDTO;
-import dancing.school.dto.CreateTeacherDTO;
-import dancing.school.dto.GetDanceGroupDTO;
-import dancing.school.dto.GetShortDanceGroupDTO;
-import dancing.school.dto.GetShortTeacherDTO;
-import dancing.school.dto.GetTeacherDTO;
-import dancing.school.dto.ResponseDTO;
-import dancing.school.dto.UpdateDanceGroupDTO;
-import dancing.school.dto.UpdateTeacherDTO;
+import dancing.school.dto.*;
 import dancing.school.services.ITeacherService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -99,6 +91,14 @@ public class TeacherController {
     @DeleteMapping("/groups/{idGroup}")
     public ResponseEntity<ResponseDTO<Void>> deleteDanceGroup(@PathVariable("idGroup") Long id) {
         teacherService.deleteDanceGroupById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @DeleteMapping("/groups/{idGroup}/student/{idStudent}")
+    public ResponseEntity<Void> removeStudentFromDanceGroup(@PathVariable("idStudent") Long studentId,
+                                                            @PathVariable("idGroup") Long danceGroupId,
+                                                            @RequestBody RemovedStudentDTO dto) {
+        teacherService.removeStudentFromDanceGroup(studentId, danceGroupId, dto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -2,6 +2,7 @@ package dancing.school.controllers;
 
 import dancing.school.dto.*;
 import dancing.school.services.IRequestService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,7 @@ public class RequestController {
 
     @PutMapping("/{requestId}/reply")
     public ResponseEntity<Void> replyRequest(@PathVariable ("requestId") Long idRequest,
-                                             @RequestBody ReplyRequestDTO dto) {
+                                             @Valid @RequestBody ReplyRequestDTO dto) {
         requestService.replyRequest(idRequest, dto);
         return ResponseEntity.ok().build();
     }
