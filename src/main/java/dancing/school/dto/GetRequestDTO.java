@@ -1,5 +1,6 @@
 package dancing.school.dto;
 
+import dancing.school.enums.StatusRequestEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ public class GetRequestDTO {
 
     private Long id;
 
-    private Enum status;
+    private StatusRequestEnum status;
 
     private String firstName;
 
