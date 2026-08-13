@@ -38,7 +38,6 @@ public class MessageTemplateService implements IMessageTemplateService {
         entity.setTeacher(teacher);
         MessageTemplateEntity savedEntity = templateRepository.save(entity);
         return templateMapper.toDto(savedEntity);
-
     }
 
     @Override
