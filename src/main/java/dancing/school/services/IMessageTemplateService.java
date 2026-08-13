@@ -13,11 +13,9 @@ public interface IMessageTemplateService {
 
     GetMessageTemplateDTO getTemplateById(Long templateId)  throws ResponseStatusException;
 
-    List<GetMessageTemplateDTO> getAllTemplatesByTeacherId(Long teacherId) throws ResponseStatusException;
+   List<GetMessageTemplateDTO> getAllTemplatesByTeacherId(Long teacherId) throws ResponseStatusException;
 
-    GetMessageTemplateDTO updateTemplate(Long teacherId, UpdateMessageTemplateDTO dto) throws ResponseStatusException;
+   GetMessageTemplateDTO updateTemplate(Long templateId, UpdateMessageTemplateDTO dto) throws ResponseStatusException;
 
     void  deleteTemplate(Long templateId) throws ResponseStatusException;
-
-
 }

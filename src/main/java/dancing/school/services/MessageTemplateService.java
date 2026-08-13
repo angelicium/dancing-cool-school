@@ -2,6 +2,7 @@ package dancing.school.services;
 
 import dancing.school.dto.CreateMessageTemplateDTO;
 import dancing.school.dto.GetMessageTemplateDTO;
+import dancing.school.dto.UpdateMessageTemplateDTO;
 import dancing.school.entities.MessageTemplateEntity;
 import dancing.school.entities.TeacherEntity;
 import dancing.school.mappers.MessageTemplateMapper;
@@ -48,6 +49,21 @@ public class MessageTemplateService implements IMessageTemplateService {
 
     @Override
     public List<GetMessageTemplateDTO> getAllTemplatesByTeacherId(Long teacherId) throws ResponseStatusException {
+        List<MessageTemplateEntity> entities = templateRepository.findAllByTeacherId(teacherId);
+        return templateMapper.toDtos(entities);
+    }
 
+    @Override
+    public GetMessageTemplateDTO updateTemplate(Long templateId, UpdateMessageTemplateDTO dto) throws ResponseStatusException {
+        MessageTemplateEntity entity = findTemplateById(templateId);
+        templateMapper.updateEntityFromDto(dto, entity);
+        MessageTemplateEntity updatedEntity = templateRepository.save(entity);
+        return templateMapper.toDto(updatedEntity);
+    }
+
+    @Override
+    public void deleteTemplate(Long templateId) throws ResponseStatusException {
+        MessageTemplateEntity entity = findTemplateById(templateId);
+        templateRepository.delete(entity);
     }
 }
