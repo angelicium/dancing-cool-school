@@ -22,4 +22,6 @@ public interface IStudentService {
     void deleteStudent(Long id);
 
     List<GetShortRequestDTO> getRequests(Long studentId) throws ResponseStatusException;
+
+    List<GetMessageTemplateDTO> getMessageTemplates(Long studentId) throws ResponseStatusException;
 }

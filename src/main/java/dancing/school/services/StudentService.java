@@ -1,8 +1,10 @@
 package dancing.school.services;
 
 import dancing.school.dto.*;
+import dancing.school.entities.MessageTemplateEntity;
 import dancing.school.entities.RequestEntity;
 import dancing.school.entities.StudentEntity;
+import dancing.school.mappers.MessageTemplateMapper;
 import dancing.school.mappers.RequestMapper;
 import dancing.school.mappers.StudentMapper;
 import dancing.school.repositories.StudentRepository;
@@ -23,6 +25,8 @@ public class StudentService implements IStudentService {
     private StudentMapper studentMapper;
 
     private RequestMapper requestMapper;
+
+    private MessageTemplateMapper messageTemplateMapper;
 
     public StudentEntity getStudent(Long id) throws ResponseStatusException {
         return studentRepository.findById(id)
@@ -74,10 +78,14 @@ public class StudentService implements IStudentService {
     public List<GetShortRequestDTO> getRequests(Long studentId) throws ResponseStatusException {
        StudentEntity studentEntity = getStudent(studentId);
        List<RequestEntity> requestEntities = studentEntity.getRequestEntities();
-
-
-
        return studentMapper.toGetRequestDTOs(requestEntities);
+    }
+
+    @Override
+    public List<GetMessageTemplateDTO> getMessageTemplates(Long studentId) throws ResponseStatusException {
+        StudentEntity entity = getStudent(studentId);
+        List<MessageTemplateEntity> templates = entity.getTemplates();
+        return messageTemplateMapper.toDtos(templates);
     }
 }
 

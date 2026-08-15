@@ -65,4 +65,12 @@ public class StudentController {
 
         return ResponseEntity.ok(responseDTO);
     }
+
+    @GetMapping("/{studentId}/templates")
+    public ResponseEntity<ResponseDTO<List<GetMessageTemplateDTO>>> getMessageTemplates(@PathVariable("studentId") Long studentId) {
+        List<GetMessageTemplateDTO> templates = studentService.getMessageTemplates(studentId);
+        var responseDTO = new ResponseDTO<List<GetMessageTemplateDTO>>();
+        responseDTO.setData(templates);
+        return ResponseEntity.ok(responseDTO);
+    }
 }

@@ -65,6 +65,7 @@ public class StudentControllerIT {
                 22,
                 prefix + " _username",
                 "12345",
+                new ArrayList<>(),
                 new ArrayList<>()
         );
     }
