@@ -1,10 +1,9 @@
 package dancing.school.services;
 
-import dancing.school.dto.CreateStudentDTO;
-import dancing.school.dto.GetShortStudentDTO;
-import dancing.school.dto.GetStudentDTO;
-import dancing.school.dto.UpdateStudentDTO;
+import dancing.school.dto.*;
+import dancing.school.entities.RequestEntity;
 import dancing.school.entities.StudentEntity;
+import dancing.school.mappers.RequestMapper;
 import dancing.school.mappers.StudentMapper;
 import dancing.school.repositories.StudentRepository;
 import lombok.AllArgsConstructor;
@@ -22,6 +21,8 @@ public class StudentService implements IStudentService {
     private StudentRepository studentRepository;
 
     private StudentMapper studentMapper;
+
+    private RequestMapper requestMapper;
 
     public StudentEntity getStudent(Long id) throws ResponseStatusException {
         return studentRepository.findById(id)
@@ -67,6 +68,16 @@ public class StudentService implements IStudentService {
     public void deleteStudent(Long id) {
         StudentEntity studentEntity = getStudent(id);
         studentRepository.delete(studentEntity);
+    }
+
+    @Override
+    public List<GetShortRequestDTO> getRequests(Long studentId) throws ResponseStatusException {
+       StudentEntity studentEntity = getStudent(studentId);
+       List<RequestEntity> requestEntities = studentEntity.getRequestEntities();
+
+
+
+       return studentMapper.toGetRequestDTOs(requestEntities);
     }
 }
 

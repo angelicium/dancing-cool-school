@@ -13,23 +13,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/templates")
 @AllArgsConstructor
 public class MessageTemplateController {
 
     private IMessageTemplateService templateService;
 
-    @PostMapping("/teachers/{teacherId}/templates")
-    public ResponseEntity<ResponseDTO<GetMessageTemplateDTO>> createTemplate(
-                                            @PathVariable("teacherId") Long teacherId,
-                                            @RequestBody CreateMessageTemplateDTO dto) {
-        GetMessageTemplateDTO  templateDTO = templateService.createTemplate(teacherId, dto);
+    @PostMapping
+    public ResponseEntity<ResponseDTO<GetMessageTemplateDTO>> createTemplate(@RequestBody CreateMessageTemplateDTO dto) {
+        GetMessageTemplateDTO  templateDTO = templateService.createTemplate(dto);
         var response = new ResponseDTO<GetMessageTemplateDTO>();
         response.setData(templateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/templates/{templateId}")
+    @GetMapping("/{templateId}")
     public ResponseEntity<ResponseDTO<GetMessageTemplateDTO>> getTemplateById(@PathVariable("templateId") Long templateId){
         GetMessageTemplateDTO templateDTO = templateService.getTemplateById(templateId);
         var response = new ResponseDTO<GetMessageTemplateDTO>();
@@ -37,15 +35,7 @@ public class MessageTemplateController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/templates/teacher/{teacherId}")
-    public ResponseEntity<ResponseDTO<List<GetMessageTemplateDTO>>>  getAllTemplatesByTeacherId(@PathVariable("teacherId") Long teacherId){
-        List<GetMessageTemplateDTO> templates = templateService.getAllTemplatesByTeacherId(teacherId);
-        var response = new ResponseDTO<List<GetMessageTemplateDTO>>();
-        response.setData(templates);
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
-    @PutMapping("templates/{templateId}")
+    @PutMapping("/{templateId}")
     public ResponseEntity<ResponseDTO<GetMessageTemplateDTO>> updateTemplate(@PathVariable("templateId") Long templateId,
                                                                              @RequestBody UpdateMessageTemplateDTO dto) {
         GetMessageTemplateDTO templateDto = templateService.updateTemplate(templateId, dto);
@@ -54,7 +44,7 @@ public class MessageTemplateController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @DeleteMapping("templates/{templateId}")
+    @DeleteMapping("/{templateId}")
     public ResponseEntity<Void>  deleteTemplate(@PathVariable("templateId") Long templateId) {
         templateService.deleteTemplate(templateId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

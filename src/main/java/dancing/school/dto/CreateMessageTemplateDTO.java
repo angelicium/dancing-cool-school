@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CreateMessageTemplateDTO {
 
+    private Long teacherId;
+
+    private Long studentId;
+
     private String title;
 
     private String text;

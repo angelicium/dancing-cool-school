@@ -36,4 +36,6 @@ public interface ITeacherService {
     void removeStudentFromDanceGroup(Long studentId,
                                      Long danceGroupId,
                                      RemovedStudentDTO dto) throws ResponseStatusException;
+
+    List<GetMessageTemplateDTO> getTeacherTemplates(Long id);
 }

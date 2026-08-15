@@ -21,6 +21,7 @@ public interface RequestMapper {
     @Mapping(target = "lastName", source = "student.lastName")
     @Mapping(target = "patronymic", source = "student.patronymic")
     @Mapping(target = "age", source = "student.age")
+    @Mapping(target = "status", expression = "java(requestEntity.getStatus().getValue())")
     GetShortRequestDTO toGetShortRequestDTO(RequestEntity requestEntity);
 
     List<GetShortRequestDTO> toGetRequestDTOs(List<RequestEntity> requests);

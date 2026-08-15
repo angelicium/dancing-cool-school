@@ -14,7 +14,7 @@ import lombok.ToString;
 public class MessageTemplateEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "template_id")
     private Long id;
 
@@ -26,6 +26,11 @@ public class MessageTemplateEntity {
 
     @ManyToOne
     @ToString.Exclude
-    @JoinColumn(name = "teacher_id", nullable = false)
+    @JoinColumn(name = "teacher_id")
     private TeacherEntity teacher;
+
+    @ManyToOne
+    @ToString.Exclude
+    @JoinColumn(name = "student_id")
+    private StudentEntity student;
 }

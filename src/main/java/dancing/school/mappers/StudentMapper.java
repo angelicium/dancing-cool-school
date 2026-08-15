@@ -1,9 +1,7 @@
 package dancing.school.mappers;
 
-import dancing.school.dto.CreateStudentDTO;
-import dancing.school.dto.GetShortStudentDTO;
-import dancing.school.dto.GetStudentDTO;
-import dancing.school.dto.UpdateStudentDTO;
+import dancing.school.dto.*;
+import dancing.school.entities.RequestEntity;
 import dancing.school.entities.StudentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -26,4 +24,13 @@ public interface StudentMapper {
     UpdateStudentDTO updateDTO(StudentEntity studentEntity);
 
     CreateStudentDTO createDTO(StudentEntity entity);
+
+    @Mapping(target = "firstName", source = "teacher.firstName")
+    @Mapping(target = "lastName", source = "teacher.lastName")
+    @Mapping(target = "patronymic", source = "teacher.patronymic")
+    @Mapping(target = "age", source = "teacher.age")
+    @Mapping(target = "status", expression = "java(requestEntity.getStatus().getValue())")
+    GetShortRequestDTO toGetShortRequestDTO(RequestEntity requestEntity);
+
+    List<GetShortRequestDTO> toGetRequestDTOs(List<RequestEntity> requests);
 }

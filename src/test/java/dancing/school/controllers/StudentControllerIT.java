@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -63,7 +64,8 @@ public class StudentControllerIT {
                 "Отчество",
                 22,
                 prefix + " _username",
-                "12345"
+                "12345",
+                new ArrayList<>()
         );
     }
 

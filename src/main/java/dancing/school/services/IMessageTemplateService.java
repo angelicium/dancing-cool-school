@@ -9,11 +9,9 @@ import java.util.List;
 
 public interface IMessageTemplateService {
 
-    GetMessageTemplateDTO createTemplate(Long teacherId, CreateMessageTemplateDTO dto) throws ResponseStatusException;
+    GetMessageTemplateDTO createTemplate(CreateMessageTemplateDTO dto) throws ResponseStatusException;
 
     GetMessageTemplateDTO getTemplateById(Long templateId)  throws ResponseStatusException;
-
-   List<GetMessageTemplateDTO> getAllTemplatesByTeacherId(Long teacherId) throws ResponseStatusException;
 
    GetMessageTemplateDTO updateTemplate(Long templateId, UpdateMessageTemplateDTO dto) throws ResponseStatusException;
 

@@ -53,6 +53,6 @@ public class TeacherEntity {
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
     private List<DanceGroupEntity> groups = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
     private List<MessageTemplateEntity> templates = new ArrayList<>();
 }

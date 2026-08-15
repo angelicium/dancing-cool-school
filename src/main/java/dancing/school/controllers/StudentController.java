@@ -55,4 +55,14 @@ public class StudentController {
         studentService.deleteStudent(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @GetMapping("/{studentId}/requests")
+    public ResponseEntity<ResponseDTO<List<GetShortRequestDTO>>> getRequests(@PathVariable("studentId") Long studentId) {
+        List<GetShortRequestDTO> requests = studentService.getRequests(studentId);
+
+        var responseDTO = new ResponseDTO<List<GetShortRequestDTO>>();
+        responseDTO.setData(requests);
+
+        return ResponseEntity.ok(responseDTO);
+    }
 }

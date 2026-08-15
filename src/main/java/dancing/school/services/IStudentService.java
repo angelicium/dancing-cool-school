@@ -1,9 +1,6 @@
 package dancing.school.services;
 
-import dancing.school.dto.CreateStudentDTO;
-import dancing.school.dto.GetShortStudentDTO;
-import dancing.school.dto.GetStudentDTO;
-import dancing.school.dto.UpdateStudentDTO;
+import dancing.school.dto.*;
 import dancing.school.entities.StudentEntity;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,4 +20,6 @@ public interface IStudentService {
     GetStudentDTO updateStudent(Long id, UpdateStudentDTO dto) throws  ResponseStatusException;
 
     void deleteStudent(Long id);
+
+    List<GetShortRequestDTO> getRequests(Long studentId) throws ResponseStatusException;
 }

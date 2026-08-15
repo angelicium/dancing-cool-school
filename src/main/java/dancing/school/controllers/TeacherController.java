@@ -101,4 +101,12 @@ public class TeacherController {
         teacherService.removeStudentFromDanceGroup(studentId, danceGroupId, dto);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @GetMapping("/{teacherId}/templates")
+    public ResponseEntity<ResponseDTO<List<GetMessageTemplateDTO>>> getTeacherTemplates(@PathVariable("teacherId") Long teacherId) {
+       List<GetMessageTemplateDTO> templates = teacherService.getTeacherTemplates(teacherId);
+       var responseDTO = new ResponseDTO<List<GetMessageTemplateDTO>>();
+       responseDTO.setData(templates);
+       return ResponseEntity.ok(responseDTO);
+    }
 }

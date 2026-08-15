@@ -4,6 +4,7 @@ import dancing.school.dto.CreateMessageTemplateDTO;
 import dancing.school.dto.GetMessageTemplateDTO;
 import dancing.school.dto.UpdateMessageTemplateDTO;
 import dancing.school.entities.MessageTemplateEntity;
+import dancing.school.entities.StudentEntity;
 import dancing.school.entities.TeacherEntity;
 import dancing.school.mappers.MessageTemplateMapper;
 import dancing.school.repositories.MessageTemplateRepository;
@@ -24,20 +25,31 @@ public class MessageTemplateService implements IMessageTemplateService {
 
     private ITeacherService teacherService;
 
+    private IStudentService studentService;
+
     private MessageTemplateEntity findTemplateById(Long id) {
         return templateRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Шаблон не найден с айди " + id
+                        HttpStatus.BAD_REQUEST, "Шаблон не найден с айди " + id
                 ));
     }
 
     @Override
-    public GetMessageTemplateDTO createTemplate(Long teacherId, CreateMessageTemplateDTO dto) throws ResponseStatusException {
-        TeacherEntity teacher = teacherService.getTeacher(teacherId);
+    public GetMessageTemplateDTO createTemplate(CreateMessageTemplateDTO dto) throws ResponseStatusException {
         MessageTemplateEntity entity = templateMapper.toEntity(dto);
-        entity.setTeacher(teacher);
-        MessageTemplateEntity savedEntity = templateRepository.save(entity);
-        return templateMapper.toDto(savedEntity);
+        if (dto.getTeacherId() != null) {
+            TeacherEntity teacher = teacherService.getTeacher(dto.getTeacherId());
+            entity.setTeacher(teacher);
+        } else if (dto.getStudentId() != null) {
+            StudentEntity student = studentService.getStudent(dto.getStudentId());
+            entity.setStudent(student);
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Должен быть указан владелец шаблона"
+            );
+        }
+        templateRepository.save(entity);
+        return templateMapper.toDto(entity);
     }
 
     @Override
@@ -47,17 +59,11 @@ public class MessageTemplateService implements IMessageTemplateService {
     }
 
     @Override
-    public List<GetMessageTemplateDTO> getAllTemplatesByTeacherId(Long teacherId) throws ResponseStatusException {
-        List<MessageTemplateEntity> entities = templateRepository.findAllByTeacherId(teacherId);
-        return templateMapper.toDtos(entities);
-    }
-
-    @Override
     public GetMessageTemplateDTO updateTemplate(Long templateId, UpdateMessageTemplateDTO dto) throws ResponseStatusException {
         MessageTemplateEntity entity = findTemplateById(templateId);
         templateMapper.updateEntityFromDto(dto, entity);
-        MessageTemplateEntity updatedEntity = templateRepository.save(entity);
-        return templateMapper.toDto(updatedEntity);
+        templateRepository.save(entity);
+        return templateMapper.toDto(entity);
     }
 
     @Override

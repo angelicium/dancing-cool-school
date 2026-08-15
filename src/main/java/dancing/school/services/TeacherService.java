@@ -4,6 +4,7 @@ import dancing.school.dto.*;
 import dancing.school.entities.*;
 import dancing.school.enums.StatusRequestEnum;
 import dancing.school.mappers.DanceGroupMapper;
+import dancing.school.mappers.MessageTemplateMapper;
 import dancing.school.mappers.TeacherMapper;
 import dancing.school.repositories.DanceGroupRepository;
 import dancing.school.repositories.RequestRepository;
@@ -27,6 +28,8 @@ public class TeacherService implements ITeacherService {
     private RequestRepository requestRepository;
 
     private TeacherMapper teacherMapper;
+
+    private MessageTemplateMapper messageTemplateMapper;
 
     private DanceGroupRepository danceGroupRepository;
 
@@ -166,6 +169,12 @@ public class TeacherService implements ITeacherService {
         requestEntity.setStatus(StatusRequestEnum.REMOVED);
         requestEntity.setMessageTeacher(dto.getMessageTeacher());
         requestRepository.save(requestEntity);
+    }
 
+    @Override
+    public List<GetMessageTemplateDTO> getTeacherTemplates(Long id) throws ResponseStatusException {
+        TeacherEntity teacher = getTeacher(id);
+        List<MessageTemplateEntity> templates = teacher.getTemplates();
+        return messageTemplateMapper.toDtos(templates);
     }
 }

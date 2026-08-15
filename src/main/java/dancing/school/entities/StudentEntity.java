@@ -1,13 +1,12 @@
 package dancing.school.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "students")
@@ -38,4 +37,10 @@ public class StudentEntity {
 
     @Column(length = 50, nullable = false)
     private String password;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    private List<MessageTemplateEntity> templates = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    private List<RequestEntity> requestEntities = new ArrayList<>();
 }
