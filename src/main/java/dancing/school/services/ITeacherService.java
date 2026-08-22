@@ -3,13 +3,15 @@ package dancing.school.services;
 import dancing.school.dto.*;
 import dancing.school.entities.DanceGroupEntity;
 import dancing.school.entities.TeacherEntity;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 public interface ITeacherService {
 
-    GetTeacherDTO createTeacher(CreateTeacherDTO dto) throws ResponseStatusException;
+    GetJwtDTO createTeacher(CreateTeacherDTO dto) throws ResponseStatusException;
 
     TeacherEntity getTeacher(Long id) throws ResponseStatusException;
 
@@ -38,4 +40,8 @@ public interface ITeacherService {
                                      RemovedStudentDTO dto) throws ResponseStatusException;
 
     List<GetMessageTemplateDTO> getTeacherTemplates(Long id);
+
+    UserDetailsService userDetailsService();
+
+    TeacherEntity getByUsername(String username) throws UsernameNotFoundException;
 }

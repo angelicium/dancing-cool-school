@@ -16,11 +16,11 @@ public class TeacherController {
 
     private ITeacherService teacherService;
 
-    @PostMapping
-    public ResponseEntity<ResponseDTO<GetTeacherDTO>> createTeacher(@RequestBody CreateTeacherDTO dto) {
-        GetTeacherDTO teacher = teacherService.createTeacher(dto);
-        var responseDTO = new ResponseDTO<GetTeacherDTO>();
-        responseDTO.setData(teacher);
+    @PostMapping("/auth/register")
+    public ResponseEntity<ResponseDTO<GetJwtDTO>> createTeacher(@RequestBody CreateTeacherDTO dto) {
+        GetJwtDTO jwt = teacherService.createTeacher(dto);
+        var responseDTO = new ResponseDTO<GetJwtDTO>();
+        responseDTO.setData(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 

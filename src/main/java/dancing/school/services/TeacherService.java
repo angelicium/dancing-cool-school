@@ -14,6 +14,9 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -39,6 +42,8 @@ public class TeacherService implements ITeacherService {
 
     private IStudentService studentService;
 
+    private JwtService jwtService;
+
     public TeacherEntity getTeacher(Long id) throws ResponseStatusException {
         return teacherRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Учитель не найден с айди " + id));
@@ -50,8 +55,14 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    public GetTeacherDTO createTeacher(CreateTeacherDTO dto) throws ResponseStatusException {
+    public GetJwtDTO createTeacher(CreateTeacherDTO dto) throws ResponseStatusException {
        TeacherEntity teacherEntity = teacherMapper.toEntity(dto);
+       BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+
+       String hashPassword = bcrypt.encode(teacherEntity.getPassword());
+
+       teacherEntity.setPassword(hashPassword);
+
        try {
            teacherRepository.save(teacherEntity);
        } catch(DataIntegrityViolationException ex) {
@@ -59,7 +70,9 @@ public class TeacherService implements ITeacherService {
                    "Такое имя пользователя уже существует");
        }
 
-       return teacherMapper.toGetTeacherDTO(teacherEntity);
+       String token = jwtService.generateToken(teacherEntity);
+
+       return new GetJwtDTO(token);
     }
 
     @Override
@@ -177,4 +190,21 @@ public class TeacherService implements ITeacherService {
         List<MessageTemplateEntity> templates = teacher.getTemplates();
         return messageTemplateMapper.toDtos(templates);
     }
+
+    @Override
+    public UserDetailsService userDetailsService() {
+        return this::getByUsername;
+    }
+
+    @Override
+    public TeacherEntity getByUsername(String username) throws UsernameNotFoundException {
+        TeacherEntity teacherEntity = teacherRepository.findTeacherEntityByUsername(username);
+
+        if(teacherEntity == null)
+            throw new UsernameNotFoundException("Преподаватель не найден");
+
+        return teacherEntity;
+    }
+
+
 }
