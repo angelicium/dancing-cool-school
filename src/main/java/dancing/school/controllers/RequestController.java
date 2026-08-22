@@ -1,6 +1,7 @@
 package dancing.school.controllers;
 
 import dancing.school.dto.*;
+import dancing.school.enums.StatusRequestEnum;
 import dancing.school.services.IRequestService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

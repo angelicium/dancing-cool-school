@@ -1,6 +1,7 @@
 package dancing.school.controllers;
 
 import dancing.school.dto.*;
+import dancing.school.enums.StatusRequestEnum;
 import dancing.school.services.IStudentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -57,8 +58,9 @@ public class StudentController {
     }
 
     @GetMapping("/{studentId}/requests")
-    public ResponseEntity<ResponseDTO<List<GetShortRequestDTO>>> getRequests(@PathVariable("studentId") Long studentId) {
-        List<GetShortRequestDTO> requests = studentService.getRequests(studentId);
+    public ResponseEntity<ResponseDTO<List<GetShortRequestDTO>>> getRequests(@PathVariable("studentId") Long studentId,
+                                                                             @RequestParam("status") StatusRequestEnum status) {
+        List<GetShortRequestDTO> requests = studentService.getRequests(studentId, status);
 
         var responseDTO = new ResponseDTO<List<GetShortRequestDTO>>();
         responseDTO.setData(requests);

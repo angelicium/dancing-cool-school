@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -31,5 +32,13 @@ public class ErrorAdvice {
         var responseDTO = new ResponseDTO<Void>();
         responseDTO.setErrors(errors);
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(responseDTO);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ResponseDTO<Void>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        ErrorDTO errorDTO = new ErrorDTO("ошибка", ex.getMessage());
+        var responseDTO = new ResponseDTO<Void>();
+        responseDTO.setErrors(List.of(errorDTO));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
     }
 }

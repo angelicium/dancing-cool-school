@@ -4,9 +4,11 @@ import dancing.school.dto.*;
 import dancing.school.entities.MessageTemplateEntity;
 import dancing.school.entities.RequestEntity;
 import dancing.school.entities.StudentEntity;
+import dancing.school.enums.StatusRequestEnum;
 import dancing.school.mappers.MessageTemplateMapper;
 import dancing.school.mappers.RequestMapper;
 import dancing.school.mappers.StudentMapper;
+import dancing.school.repositories.RequestRepository;
 import dancing.school.repositories.StudentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,9 +26,9 @@ public class StudentService implements IStudentService {
 
     private StudentMapper studentMapper;
 
-    private RequestMapper requestMapper;
-
     private MessageTemplateMapper messageTemplateMapper;
+
+    private RequestRepository requestRepository;
 
     public StudentEntity getStudent(Long id) throws ResponseStatusException {
         return studentRepository.findById(id)
@@ -75,9 +77,9 @@ public class StudentService implements IStudentService {
     }
 
     @Override
-    public List<GetShortRequestDTO> getRequests(Long studentId) throws ResponseStatusException {
+    public List<GetShortRequestDTO> getRequests(Long studentId, StatusRequestEnum status) throws ResponseStatusException {
        StudentEntity studentEntity = getStudent(studentId);
-       List<RequestEntity> requestEntities = studentEntity.getRequestEntities();
+       List<RequestEntity> requestEntities = requestRepository.findByStudentAndStatus(studentEntity, status);
        return studentMapper.toGetRequestDTOs(requestEntities);
     }
 
