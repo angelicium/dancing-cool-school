@@ -13,6 +13,8 @@ public interface ITeacherService {
 
     GetJwtDTO createTeacher(CreateTeacherDTO dto) throws ResponseStatusException;
 
+    GetJwtDTO login(AuthUserDTO dto)  throws ResponseStatusException;
+
     TeacherEntity getTeacher(Long id) throws ResponseStatusException;
 
     List<GetShortTeacherDTO> getTeachers();

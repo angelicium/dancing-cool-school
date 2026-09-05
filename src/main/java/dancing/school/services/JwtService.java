@@ -1,6 +1,8 @@
 package dancing.school.services;
 
+import dancing.school.entities.StudentEntity;
 import dancing.school.entities.TeacherEntity;
+import dancing.school.enums.RoleEnum;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,15 +23,30 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String jwtSigningKey;
 
+    private void addClaims(Map<String, Object> claims, Long id, RoleEnum role) {
+        claims.put("id", id);
+        claims.put("role", role);
+    }
+
     // Извлечение имени пользователя из токена
     public String extractUserName(String token) {
         return this.extractClaim(token, Claims::getSubject);
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public RoleEnum extractRole(String token) {
+        Claims claims = extractAllClaims(token);
+        String role = claims.get("role", String.class);
+        return RoleEnum.valueOf(role);
+
+    }
+
+    public String generateToken(UserDetails userDetails, RoleEnum role) {
         Map<String, Object> claims = new HashMap<>();
+
         if (userDetails instanceof TeacherEntity customUserDetails) {
-            claims.put("id", customUserDetails.getId());
+            addClaims(claims, customUserDetails.getId(), role);
+        } else if(userDetails instanceof StudentEntity customUserDetails) {
+            addClaims(claims, customUserDetails.getId(), role);
         }
         return generateToken(claims, userDetails);
     }

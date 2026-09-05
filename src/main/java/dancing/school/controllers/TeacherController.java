@@ -24,6 +24,14 @@ public class TeacherController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
+    @PostMapping("/auth/login")
+    public ResponseEntity<ResponseDTO<GetJwtDTO>> login(@RequestBody AuthUserDTO dto) {
+        GetJwtDTO jwt = teacherService.login(dto);
+        var responseDTO = new ResponseDTO<GetJwtDTO>();
+        responseDTO.setData(jwt);
+        return ResponseEntity.ok(responseDTO);
+    }
+
     @GetMapping
     public ResponseEntity<ResponseDTO<List<GetShortTeacherDTO>>> getTeachers() {
         List<GetShortTeacherDTO> teachers = teacherService.getTeachers();

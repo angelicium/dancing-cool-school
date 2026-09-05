@@ -2,6 +2,7 @@ package dancing.school.services;
 
 import dancing.school.dto.*;
 import dancing.school.entities.*;
+import dancing.school.enums.RoleEnum;
 import dancing.school.enums.StatusRequestEnum;
 import dancing.school.mappers.DanceGroupMapper;
 import dancing.school.mappers.MessageTemplateMapper;
@@ -70,10 +71,36 @@ public class TeacherService implements ITeacherService {
                    "Такое имя пользователя уже существует");
        }
 
-       String token = jwtService.generateToken(teacherEntity);
+       String token = jwtService.generateToken(teacherEntity, RoleEnum.TEACHER);
 
        return new GetJwtDTO(token);
     }
+
+    @Override
+    public GetJwtDTO login(AuthUserDTO dto) throws ResponseStatusException {
+        TeacherEntity teacherEntity = null;
+
+        try {
+            teacherEntity = getByUsername(dto.getUsername());
+        } catch(Exception e) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        var bcrypt = new BCryptPasswordEncoder();
+
+        if(bcrypt.matches(dto.getPassword(), teacherEntity.getPassword())) {
+            var jwt = new GetJwtDTO();
+
+           String token = jwtService.generateToken(teacherEntity, RoleEnum.TEACHER);
+
+           jwt.setToken(token);
+
+           return jwt;
+        }
+
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+    }
+
 
     @Override
     public List<GetShortTeacherDTO> getTeachers() {

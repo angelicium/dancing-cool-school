@@ -33,11 +33,11 @@ public class StudentController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseDTO<GetStudentDTO>> createStudent(@RequestBody CreateStudentDTO dto) {
-        GetStudentDTO student = studentService.createStudent(dto);
-        var responseDTO = new ResponseDTO<GetStudentDTO>();
-        responseDTO.setData(student);
+    @PostMapping("/auth/register")
+    public ResponseEntity<ResponseDTO<GetJwtDTO>> createStudent(@RequestBody CreateStudentDTO dto) {
+        GetJwtDTO jwt = studentService.createStudent(dto);
+        var responseDTO = new ResponseDTO<GetJwtDTO>();
+        responseDTO.setData(jwt);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 

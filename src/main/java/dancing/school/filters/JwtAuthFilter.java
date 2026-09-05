@@ -1,5 +1,7 @@
 package dancing.school.filters;
 
+import dancing.school.enums.RoleEnum;
+import dancing.school.services.IStudentService;
 import dancing.school.services.ITeacherService;
 import dancing.school.services.JwtService;
 import io.jsonwebtoken.io.IOException;
@@ -29,6 +31,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private ITeacherService teacherService;
 
+    @Autowired
+    private IStudentService studentService;
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader(HEADER_NAME);
@@ -46,16 +51,29 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String username = "";
 
+        RoleEnum role = null;
+
         try {
             username = this.jwtService.extractUserName(jwt);
+            role = this.jwtService.extractRole(jwt);
         } catch (Exception e) {
             System.out.println("[ERROR] Не валидный токен");
         }
 
         if (!StringUtils.isEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = teacherService
-                    .userDetailsService()
-                    .loadUserByUsername(username);
+            UserDetails userDetails = null;
+            switch(role) {
+                case STUDENT:
+                    userDetails = studentService
+                            .userDetailsService()
+                            .loadUserByUsername(username);
+                    break;
+                case TEACHER:
+                    userDetails = teacherService
+                        .userDetailsService()
+                        .loadUserByUsername(username);
+                    break;
+            }
 
             // Если токен валиден, то аутентифицируем пользователя
             if (jwtService.isTokenValid(jwt, userDetails)) {
