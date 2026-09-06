@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -115,21 +116,22 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    public void deleteTeacherById(Long id) throws ResponseStatusException {
-        TeacherEntity teacherEntity = getTeacher(id);
+    public void deleteTeacher() throws ResponseStatusException {
+        TeacherEntity teacherEntity = getCurrentTeacher();
         teacherRepository.delete(teacherEntity);
     }
 
     @Override
-    public GetTeacherDTO updateTeacher(Long id, UpdateTeacherDTO dto) throws ResponseStatusException {
-        getTeacher(id);
-        TeacherEntity changedEntity = this.teacherMapper.changeEntity(id, dto);
-        try {
-            this.teacherRepository.save(changedEntity);
-        } catch(DataIntegrityViolationException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Такое имя пользователя уже существует");
-        }
+    public GetTeacherDTO updateTeacher(UpdateTeacherDTO dto) throws ResponseStatusException {
+        TeacherEntity teacherEntity = getCurrentTeacher();
+        TeacherEntity changedEntity = this.teacherMapper.changeEntity(teacherEntity.getId(), teacherEntity.getUsername(), dto);
+        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
 
+        String hashPassword = bcrypt.encode(changedEntity.getPassword());
+
+        changedEntity.setPassword(hashPassword);
+
+        this.teacherRepository.save(changedEntity);
         return this.teacherMapper.toGetTeacherDTO(changedEntity);
     }
 
@@ -221,6 +223,12 @@ public class TeacherService implements ITeacherService {
     @Override
     public UserDetailsService userDetailsService() {
         return this::getByUsername;
+    }
+
+    private TeacherEntity getCurrentTeacher() {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return getByUsername(name);
     }
 
     @Override

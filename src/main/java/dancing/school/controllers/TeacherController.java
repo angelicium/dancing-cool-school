@@ -1,6 +1,8 @@
 package dancing.school.controllers;
 
 import dancing.school.dto.*;
+import dancing.school.enums.RoleEnum;
+import dancing.school.helpers.JwtAuthHelper;
 import dancing.school.services.ITeacherService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,8 @@ import java.util.List;
 public class TeacherController {
 
     private ITeacherService teacherService;
+
+    private JwtAuthHelper jwtAuthHelper;
 
     @PostMapping("/auth/register")
     public ResponseEntity<ResponseDTO<GetJwtDTO>> createTeacher(@RequestBody CreateTeacherDTO dto) {
@@ -48,15 +52,20 @@ public class TeacherController {
        return ResponseEntity.ok(responseDTO);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDTO<Void>> deleteTeacher(@PathVariable("id") Long id) {
-        this.teacherService.deleteTeacherById(id);
+    @DeleteMapping
+    public ResponseEntity<ResponseDTO<Void>> deleteTeacher(@RequestHeader("Authorization") String token) {
+        jwtAuthHelper.checkRole(token, RoleEnum.TEACHER);
+
+        this.teacherService.deleteTeacher();
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ResponseDTO<GetTeacherDTO>> updateTeacher(@RequestBody UpdateTeacherDTO dto, @PathVariable("id") Long id) {
-        GetTeacherDTO teacher = this.teacherService.updateTeacher(id, dto);
+    @PutMapping
+    public ResponseEntity<ResponseDTO<GetTeacherDTO>> updateTeacher(@RequestBody UpdateTeacherDTO dto,
+                                                                    @RequestHeader("Authorization") String token) {
+        jwtAuthHelper.checkRole(token, RoleEnum.TEACHER);
+
+        GetTeacherDTO teacher = this.teacherService.updateTeacher(dto);
         var responseDTO = new ResponseDTO<GetTeacherDTO>();
         responseDTO.setData(teacher);
         return ResponseEntity.ok(responseDTO);

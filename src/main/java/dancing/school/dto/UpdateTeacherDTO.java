@@ -21,7 +21,5 @@ public class UpdateTeacherDTO {
 
     private String aboutMe;
 
-    private String username;
-
     private String password;
 }

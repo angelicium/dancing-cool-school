@@ -22,8 +22,9 @@ public interface TeacherMapper {
     List<GetShortTeacherDTO> toGetShortTeacherDTOs(List<TeacherEntity> teacherEntities);
 
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "username", source = "username")
     @Mapping(target = "groups",  ignore = true)
-    TeacherEntity changeEntity(Long id, UpdateTeacherDTO dto);
+    TeacherEntity changeEntity(Long id, String username, UpdateTeacherDTO dto);
 
     UpdateTeacherDTO updateDTO(TeacherEntity teacherEntity);
 
